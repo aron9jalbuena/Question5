@@ -16,6 +16,21 @@
               required
             ></b-form-input>
           </b-form-group>
+
+          <b-form-group
+            id = "input-group-2"
+            label = "Key"
+            label-for = "input-2"
+            description = "Key For Text"
+          >
+            <b-form-input
+              id = "input-2"
+              v-model="form.key"
+              placeholder="Key"
+              required
+            ></b-form-input>
+          </b-form-group>
+
         </b-form>
         <b-button @click="displayinfo()">Send To IPFS</b-button>
         <br>
@@ -41,7 +56,8 @@ export default {
   data () {
     return {
       form:{
-        text: ''
+        text: '',
+        key: ''
       },
       info: '',
       decryptext: '',
@@ -51,23 +67,19 @@ export default {
 
   methods:{
 
-    onSubmit(){
-      alert(this.form.text)
-    },
-
     async displayinfo(){
       var bodyformData = new FormData()
       bodyformData.append('text', this.form.text)
+      bodyformData.append('keyinput', this.form.key)
       const inforeturn = await axios.post('http://localhost:1323/add', bodyformData)
       this.info = inforeturn.data
-      console.log(this.info)
-      console.log(inforeturn.error)
+      console.log(inforeturn.error.data)
     },
 
     async decryptinfo(){
       const decrypteddata = await axios.get('http://localhost:1323/get/'+this.info)
       this.decryptext = decrypteddata.data
-      console.log(decrypteddata.error)
+      console.log(decrypteddata.error.data)
     }
   }
 }
