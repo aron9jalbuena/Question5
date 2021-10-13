@@ -1,17 +1,74 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <div>
+    <b-row>
+      <b-col>
+        <b-form>
+          <b-form-group
+            id = "input-group-1"
+            label = "Text"
+            label-for = "input-1"
+            description = "Text To Send To IPFS"
+          >
+            <b-form-input
+              id = "input-1"
+              v-model="form.text"
+              placeholder="text to send"
+              required
+            ></b-form-input>
+          </b-form-group>
+        </b-form>
+        <b-button @click="displayinfo()">Send To IPFS</b-button>
+        <br>
+        <br><b-button @click="decryptinfo()">Decrypt Data</b-button>
+      </b-col>
+
+      <b-col>
+        Encrypted Data
+        <br> {{info}}
+      </b-col> 
+
+      <b-col>
+        Decrypted Data 
+        <br> {{decryptext}}
+      </b-col>
+    </b-row>
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import axios from 'axios';
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  data () {
+    return {
+      form:{
+        text: ''
+      },
+      info: '',
+      decryptext: '',
+      show: true
+    }
+  },
+
+  methods:{
+
+    onSubmit(){
+      alert(this.form.text)
+    },
+
+    async displayinfo(){
+      var bodyformData = new FormData()
+      bodyformData.append('text', this.form.text)
+      const inforeturn = await axios.post('http://localhost:1323/add', bodyformData)
+      this.info = inforeturn.data
+      console.log(this.info)
+      console.log(inforeturn.error)
+    },
+
+    async decryptinfo(){
+      const decrypteddata = await axios.get('http://localhost:1323/get/'+this.info)
+      this.decryptext = decrypteddata.data
+      console.log(decrypteddata.error)
+    }
   }
 }
 </script>
