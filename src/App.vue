@@ -67,19 +67,30 @@ export default {
 
   methods:{
 
-    async displayinfo(){
-      var bodyformData = new FormData()
-      bodyformData.append('text', this.form.text)
-      bodyformData.append('keyinput', this.form.key)
-      const inforeturn = await axios.post('http://localhost:1323/add', bodyformData)
-      this.info = inforeturn.data
-      console.log(inforeturn.error.data)
+    displayinfo(){
+      axios
+        .post('http://localhost:1323/add', {
+          text: this.form.text,
+          keyinput: this.form.key
+        })
+        .then(response => {
+          this.info = response.data
+        })
+        .catch(error => console.log(error))
     },
 
-    async decryptinfo(){
-      const decrypteddata = await axios.get('http://localhost:1323/get/'+this.info)
-      this.decryptext = decrypteddata.data
-      console.log(decrypteddata.error.data)
+    decryptinfo(){
+      axios
+        .post('http://localhost:1323/get', {
+          cid: this.info,
+          keyinput: this.form.key
+        })
+        .then(response => {
+          this.decryptext = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 }
